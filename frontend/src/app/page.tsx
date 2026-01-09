@@ -131,16 +131,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8">
+    <div className="min-h-screen bg-gray-50 p-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <div className="max-w-4xl mx-auto ">
+        <header className="mb-8  ">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Todo App</h1>
-          <p className="text-gray-600">Manage your tasks efficiently</p>
+          <p className="text-gray-200">Manage your tasks efficiently</p>
         </header>
 
         {/* Add Task Form */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-black">Add New Task</h2>
           <form onSubmit={addTask} className="space-y-4">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
@@ -152,7 +152,7 @@ export default function Home() {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Enter task title"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-green-400 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -165,7 +165,7 @@ export default function Home() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Enter task description (optional)"
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-pink-500 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -178,7 +178,7 @@ export default function Home() {
                   name="due_date"
                   value={formData.due_date}
                   onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 bg-yellow-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -189,7 +189,7 @@ export default function Home() {
                   name="priority"
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value as 'low' | 'medium' | 'high' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border bg-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -216,7 +216,7 @@ export default function Home() {
 
         {/* Tasks List */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4">Your Tasks</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-black">Your Tasks</h2>
 
           {loading ? (
             <p className="text-gray-600">Loading tasks...</p>
