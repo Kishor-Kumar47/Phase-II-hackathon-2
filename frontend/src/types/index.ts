@@ -30,6 +30,7 @@ export interface TaskInput {
   description?: string;
   due_date?: string;
   priority: 'low' | 'medium' | 'high';
+  is_completed?: boolean;
 }
 
 export interface ApiResponse<T> {

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Task, TaskInput } from '../types';
-import { isAuthenticated, getAccessToken } from '../services/auth';
+import { isAuthenticated, getAuthToken } from '../services/auth';
 import { useRouter } from 'next/navigation';
-import Navigation from '../components/Layout/Navigation';
+import Navigation from '../components/layout/Navigation';
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -30,7 +30,7 @@ export default function Home() {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const token = getAccessToken();
+      const token = getAuthToken();
 
       if (!token) {
         router.push('/auth/login');
@@ -76,7 +76,7 @@ export default function Home() {
     }
 
     try {
-      const token = getAccessToken();
+      const token = getAuthToken();
 
       if (!token) {
         router.push('/auth/login');
@@ -123,7 +123,7 @@ export default function Home() {
   // Update a task
   const updateTask = async (taskId: number, updatedData: Partial<Task>) => {
     try {
-      const token = getAccessToken();
+      const token = getAuthToken();
 
       if (!token) {
         router.push('/auth/login');
@@ -160,7 +160,7 @@ export default function Home() {
     if (!confirm('Are you sure you want to delete this task?')) return;
 
     try {
-      const token = getAccessToken();
+      const token = getAuthToken();
 
       if (!token) {
         router.push('/auth/login');

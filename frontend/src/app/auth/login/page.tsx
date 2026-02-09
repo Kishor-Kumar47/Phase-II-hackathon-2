@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { setAccessToken } from '../../../services/auth';
+import { setAuthToken } from '../../../services/auth';
 import Link from 'next/link';
-import { login } from '../../../services/api';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -59,7 +58,7 @@ export default function LoginPage() {
       }
 
       // Store token in localStorage
-      setAccessToken(data.access_token);
+      setAuthToken(data.access_token);
 
       // Also set token in cookie for middleware authentication
       document.cookie = `access_token=${data.access_token}; path=/; max-age=1800; SameSite=Lax`;

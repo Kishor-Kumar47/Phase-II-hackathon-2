@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { taskApi } from '../../services/api';
 import TaskItem from './TaskItem';
 import TaskForm from './TaskForm';
-import { Task } from '../../types';
+import { Task, TaskInput } from '../../types';
 
 interface TaskListProps {
   userId: number;
@@ -34,9 +34,13 @@ const TaskList: React.FC<TaskListProps> = ({ userId }) => {
   }, [userId]);
 
   // Add a new task
-  const addTask = async (taskData: Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addTask = async (taskData: TaskInput) => {
     try {
-      const response = await taskApi.createTask(userId, taskData);
+      const taskWithCompletion = {
+        ...taskData,
+        is_completed: taskData.is_completed ?? false
+      };
+      const response = await taskApi.createTask(userId, taskWithCompletion);
       setTasks([...tasks, response.data]);
     } catch (err) {
       setError('Failed to create task');

@@ -57,7 +57,7 @@ export const getUserIdFromToken = (): number | null => {
 
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.sub; // Assuming user ID is stored in 'sub' field
+    return payload.sub;
   } catch (error) {
     console.error('Error decoding token:', error);
     return null;
@@ -72,7 +72,6 @@ export const refreshToken = async (): Promise<string | null> => {
   }
 
   try {
-    // Call your backend refresh endpoint
     const response = await fetch('/api/auth/refresh', {
       method: 'POST',
       headers: {
@@ -86,7 +85,6 @@ export const refreshToken = async (): Promise<string | null> => {
       setAuthToken(data.accessToken);
       return data.accessToken;
     } else {
-      // Refresh failed, user needs to log in again
       removeAuthToken();
       return null;
     }

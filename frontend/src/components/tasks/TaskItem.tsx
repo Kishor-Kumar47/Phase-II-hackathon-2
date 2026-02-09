@@ -55,7 +55,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onUpdate, onDelete, onToggleC
           />
           <select
             value={editedPriority}
-            onChange={(e) => setEditedPriority(e.target.value)}
+            onChange={(e) => setEditedPriority(e.target.value as 'low' | 'medium' | 'high')}
             className="task-priority-select"
           >
             <option value="low">Low</option>
