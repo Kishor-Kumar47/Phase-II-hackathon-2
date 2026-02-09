@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Task, TaskInput } from '../types';
+import { isAuthenticated, getAccessToken } from '../services/auth';
+import { useRouter } from 'next/navigation';
+import Navigation from '../components/Layout/Navigation';
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -14,12 +17,41 @@ export default function Home() {
     priority: 'medium',
   });
 
+  const router = useRouter();
+
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/auth/login');
+    }
+  }, [router]);
+
   // Fetch tasks
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://127.0.0.1:8000/api/1/tasks');
-      if (!response.ok) throw new Error('Failed to fetch tasks');
+      const token = getAccessToken();
+
+      if (!token) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'}/todos/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/auth/login');
+          return;
+        }
+        throw new Error('Failed to fetch tasks');
+      }
+
       const data = await response.json();
       setTasks(data);
     } catch (err) {
@@ -44,15 +76,33 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/tasks', {
+      const token = getAccessToken();
+
+      if (!token) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'}/todos/`, {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description || null,
+          is_completed: false
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to create task');
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/auth/login');
+          return;
+        }
+        throw new Error('Failed to create task');
+      }
 
       const newTask = await response.json();
       setTasks([...tasks, newTask]);
@@ -73,15 +123,29 @@ export default function Home() {
   // Update a task
   const updateTask = async (taskId: number, updatedData: Partial<Task>) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/1/tasks/${taskId}`, {
+      const token = getAccessToken();
+
+      if (!token) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'}/todos/${taskId}`, {
         method: 'PUT',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedData),
       });
 
-      if (!response.ok) throw new Error('Failed to update task');
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/auth/login');
+          return;
+        }
+        throw new Error('Failed to update task');
+      }
 
       const updatedTask = await response.json();
       setTasks(tasks.map(task => task.id === taskId ? updatedTask : task));
@@ -96,11 +160,27 @@ export default function Home() {
     if (!confirm('Are you sure you want to delete this task?')) return;
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/1/tasks/${taskId}`, {
+      const token = getAccessToken();
+
+      if (!token) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'}/todos/${taskId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
-      if (!response.ok) throw new Error('Failed to delete task');
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/auth/login');
+          return;
+        }
+        throw new Error('Failed to delete task');
+      }
 
       setTasks(tasks.filter(task => task.id !== taskId));
     } catch (err) {
@@ -112,18 +192,9 @@ export default function Home() {
   // Toggle task completion
   const toggleTaskCompletion = async (taskId: number, isCompleted: boolean) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/1/tasks/${taskId}/complete`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ is_completed: isCompleted }),
-      });
-
-      if (!response.ok) throw new Error('Failed to update task completion');
-
-      const updatedTask = await response.json();
-      setTasks(tasks.map(task => task.id === taskId ? updatedTask : task));
+      // For toggling completion, we'll use the update endpoint since the backend doesn't have a specific completion endpoint
+      const updatedData = { is_completed: isCompleted };
+      await updateTask(taskId, updatedData);
     } catch (err) {
       setError('Failed to update task completion');
       console.error('Error updating task completion:', err);
@@ -132,8 +203,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-      <div className="max-w-4xl mx-auto ">
-        <header className="mb-8  ">
+      <Navigation />
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Todo App</h1>
           <p className="text-gray-200">Manage your tasks efficiently</p>
         </header>

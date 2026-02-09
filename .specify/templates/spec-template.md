@@ -122,7 +122,16 @@
 - Follow Agentic Dev Stack workflow
 
 ### Security Requirements
-- JWT-based authentication is required
-- All API endpoints must validate JWT tokens
+- Users must sign in before creating, updating, or deleting tasks
+- All API endpoints must validate authentication
 - Users can only access their own data
 - Follow security-first architecture principles
+
+### UI/UX Requirements
+- Application must have a modern, attractive, and user-friendly interface
+- UI must follow red and black color theme
+- Focus on usability and user experience
+
+### Public Access Requirements
+- A public landing page must exist for non-authenticated users
+- Non-authenticated users should be able to view application overview

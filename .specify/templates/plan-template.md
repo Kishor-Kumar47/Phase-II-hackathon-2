@@ -33,8 +33,11 @@
 
 - Code generation with Claude Code: All code must be generated using Claude Code; Manual coding or patching is forbidden
 - Spec-Driven Development: Specs are the single source of truth; Agentic Dev Stack workflow is mandatory
-- Security-First Architecture: JWT-based authentication is required; All API endpoints must validate JWT tokens; Users can only access their own data
-- Modern Tech Stack Standards: Frontend: Next.js 16+ (App Router); Backend: Python FastAPI; ORM: SQLModel; Database: Neon Serverless PostgreSQL; Authentication: Better Auth with JWT
+- Security-First Architecture: Users must sign in before creating, updating, or deleting tasks; All API endpoints must validate authentication; Users can only access their own data
+- Modern Tech Stack Standards: Frontend: React/Next.js + Tailwind CSS; Backend: Python FastAPI; Database: SQLite or PostgreSQL; Authentication: Simple JWT-based authentication
+- UI/UX Standards: Application must have a modern, attractive, and user-friendly interface with a red and black color theme
+- Public Access Requirement: A public landing page must exist for non-authenticated users to view application overview
+- Simplicity Over Engineering: Prefer simplicity over over-engineering; All Phase-II requirements must be fulfilled with minimal complexity
 
 ## Project Structure
 
